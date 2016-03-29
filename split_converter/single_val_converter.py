@@ -59,13 +59,3 @@ class single_val_converter(object):
 		a = single_val_converter(float(mph))
 		return a.mph_to_msplit()
 		
-
-# a = single_val_converter(20)
-# print(a.kmh_to_split())
-# print(a.kmh_to_mph())
-# print(a.kmh_to_msplit())
-# print(a.mph_to_split())
-# print(a.mph_to_kmh())
-# print(a.mph_to_msplit())
-
-
