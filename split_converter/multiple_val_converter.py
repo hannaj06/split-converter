@@ -1,7 +1,7 @@
-from converterError import converterError
-from single_val_converter import single_val_converter
+from split_converter.converterError import converterError
+from split_converter.single_val_converter import single_val_converter
 
-class multiple_val_convter(object):
+class multiple_val_converter(object):
 	def __init__(self, mins, sec):
 
 		if type(sec) is str:
@@ -49,9 +49,9 @@ class multiple_val_convter(object):
 		return a.mph_to_split()
 
 
-a = multiple_val_convter(4, 5)
-print(a.split_to_mph())
-print(a.split_to_mpslit())
-print(a.msplit_to_mph())
-print(a.msplit_to_kmh())
-print(a.msplit_to_split())
+# a = multiple_val_converter(4, 5)
+# print(a.split_to_mph())
+# print(a.split_to_mpslit())
+# print(a.msplit_to_mph())
+# print(a.msplit_to_kmh())
+# print(a.msplit_to_split())

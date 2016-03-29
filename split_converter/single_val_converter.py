@@ -1,5 +1,5 @@
 import datetime
-from converterError import converterError
+from split_converter.converterError import converterError
 
 #accepts single values (mph or kmh)
 #defines functions to convert to 500m split times, mph or kmh
