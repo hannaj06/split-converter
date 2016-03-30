@@ -1,17 +1,19 @@
 import datetime
 from split_converter.converterError import converterError
 
-#accepts single values (mph or kmh)
+#accepts single values (mph or kmh) as a string
 #defines functions to convert to 500m split times, mph or kmh
 class single_val_converter(object):
 	def __init__(self, value):
-		if type(value) is str:
+		try:
+			self.value = float(value)
+		except ValueError:
 			raise converterError('value must be a positive real number!')
-		elif value <= 0:
+
+		if self.value <= 0:
 			raise converterError('value must be greater than 0!')
 
-		self.value = value
-	
+
 	#precondition: miles per hour as a positive real number
 	#postcondition: returns min/500 m split time as string
 	def mph_to_split(self):
@@ -58,4 +60,3 @@ class single_val_converter(object):
 		mph = self.kmh_to_mph()
 		a = single_val_converter(float(mph))
 		return a.mph_to_msplit()
-		

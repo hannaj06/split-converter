@@ -1,38 +1,94 @@
 from split_converter.converterError import converterError
 from split_converter.single_val_converter import single_val_converter
 from split_converter.multiple_val_converter import multiple_val_converter
-import tkinter
+from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
+
+class split_converter:
+
+	def __init__(self, root):
+		self.root = root
+		self.root.title('velocity converter')
+		Frame(self.root, width=260, height=10).pack()
+		Label(self.root, text='select velocity unit to convert:').pack()
+		self.combo()
+		Button(self.root, text='Quit', command=self.root.quit).pack(side='bottom')
+		Button(self.root, text='Enter', command=self.calculate).pack(side='bottom')
+
+	def calculate(self):
+		try:
+			if self.box.get() == 'kmh':
+				converter = single_val_converter(self.e1.get())
+
+				results = [converter.kmh_to_split(),
+				self.e1.get(),
+				converter.kmh_to_mph(),
+				converter.kmh_to_msplit()]
 
 
-class ComboBoxDemo:
+			elif self.box.get() == 'mph':
+				converter = single_val_converter(self.e1.get())
 
-	def __init__(self, parent):
-		self.parent = parent
-		self.display_combo()  # work delegated
+				results = [converter.mph_to_split(),
+				converter.mph_to_kmh(),
+				self.e1.get(),
+				converter.mph_to_msplit()
+				] 
 
-	def display_combo(self):
-		# A Combobox with values 'First value', 'Second value', 'Third value' is on console
+			elif self.box.get() == 'sec/500m':
+				converter = multiple_val_converter(self.e1.get(), self.e2.get())
+
+				results = [self.e1.get() + ':' + self.e2.get(),
+				converter.split_to_kmh(),
+				converter.split_to_mph(),
+				converter.split_to_msplit()
+				]
+
+			elif self.box.get() == 'min/mile':
+				converter = multiple_val_converter(self.e1.get(), self.e2.get())
+
+				results = [converter.msplit_to_split(),
+				converter.msplit_to_kmh(),
+				converter.msplit_to_mph(),
+				self.e1.get() + ':' + self.e2.get()
+				]
+
+
+			units = [' sec/500m', ' kmh ', ' mph', ' min/mile']
+			i = 0
+			for result in results:
+				Label(self.root, text = result + units[i]).pack()
+				i += 1
+
+			Label(self.root, text = '-----------------------').pack()
+		except converterError as e:
+			messagebox.showwarning("Error", str(e))
+
+
+	def combo(self):
 		self.box = ttk.Combobox()
-		# Combobox inherits from Sequence--on which indexing is allowed
-		self.box['values'] = ('s/500m', 'kmh', 'mph', 'min/mile')
-		self.box.grid(column=0, row=0)  # position of display *
-		self.box.current(0)  # index of value showing (as default) in the single line window
-
-
-		def echo_to_console(an_event):
-			if self.box.get() == 's/500m' or self.box.get() == 'min/mile':
-				print('multiple val input')
+		self.box['values'] = ('sec/500m', 'kmh', 'mph', 'min/mile')
+		self.box.pack()
+		
+		def input_box(event):
+			if self.box.get() == 'kmh' or self.box.get() == 'mph':
+				Label(self.root, text=self.box.get() + ':').pack()
+				self.e1 = Entry(self.root)
+				self.e1.pack()
 			else:
-				print(self.box.get())
-				print('single val input')
+				Label(self.root, text=self.box.get() + ':').pack()
+				self.e1 = Entry(self.root)
+				self.e2 = Entry(self.root)
+				Label(self.root, text='minute(s):').pack()
+				self.e1.pack()
+				Label(self.root, text='second(s):').pack()
+				self.e2.pack()
 
+		self.box.bind('<<ComboboxSelected>>', input_box)
 
-		self.box.bind('<<ComboboxSelected>>', echo_to_console)
 
 if __name__ == '__main__':
-	root = tkinter.Tk()
-	app = ComboBoxDemo(root)
+	root = Tk()
+	app = split_converter(root)
 	root.mainloop()
-	app.destroy()
-

@@ -1,19 +1,24 @@
 from split_converter.converterError import converterError
 from split_converter.single_val_converter import single_val_converter
 
+
+
+#accepts two values (mins and sec) as a string
+#defines functions to convert to 500m split times, mph or kmh
 class multiple_val_converter(object):
 	def __init__(self, mins, sec):
-
-		if type(sec) is str:
+		try:
+			self.sec = float(sec)
+		except ValueError:
 			raise converterError('seconds must be a positive integer or float!')
-		elif type(mins) is not int:
-			raise converterError('value must be integer')
-		elif sec < 0 or mins < 0:
+
+		try:
+			self.mins = int(mins)
+		except ValueError:
+			raise converterError('minutes must be positive integer')
+
+		if self.sec < 0 or self.mins < 0:
 			raise converterError('value must be greater than 0!')
-
-
-		self.mins = mins
-		self.sec = sec
 
 	def split_to_mph(self):
 		total_s = self.mins * 60 + self.sec
@@ -26,7 +31,7 @@ class multiple_val_converter(object):
 		a = single_val_converter(float(mph))
 		return a.mph_to_kmh()
 
-	def split_to_mpslit(self):
+	def split_to_msplit(self):
 		mph = self.split_to_mph()
 		a = single_val_converter(float(mph))
 		return a.mph_to_msplit()
@@ -34,7 +39,6 @@ class multiple_val_converter(object):
 	def msplit_to_mph(self):
 		total_s = self.mins * 60 + self.sec
 		m_s = 1609.34/total_s				#m/s
-		print(m_s)
 		mph = round(m_s * 2.237, 2)
 		return str(mph)
 
@@ -47,11 +51,3 @@ class multiple_val_converter(object):
 		mph = self.msplit_to_mph()
 		a = single_val_converter(float(mph))
 		return a.mph_to_split()
-
-
-# a = multiple_val_converter(4, 5)
-# print(a.split_to_mph())
-# print(a.split_to_mpslit())
-# print(a.msplit_to_mph())
-# print(a.msplit_to_kmh())
-# print(a.msplit_to_split())

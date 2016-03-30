@@ -1,4 +1,4 @@
-class converterError(Exception):
+class converterError(BaseException):
 	def __init__(self, message):
 		self.message = message
 
