@@ -16,6 +16,8 @@ class split_converter:
 		Button(self.root, text='Quit', command=self.root.quit).pack(side='bottom')
 		Button(self.root, text='Enter', command=self.calculate).pack(side='bottom')
 
+	#returns 500/m split time, kmh, mph, and min/mile equivalent times
+	#handles string input, float, and <0 errors
 	def calculate(self):
 		try:
 			if self.box.get() == 'kmh':
