@@ -1,6 +1,7 @@
 from split_converter.converterError import converterError
 from split_converter.single_val_converter import single_val_converter
 from split_converter.multiple_val_converter import multiple_val_converter
+from split_converter.db_controller import db_controller
 import datetime
 from tkinter import *
 from tkinter import ttk
@@ -16,7 +17,9 @@ class split_converter:
 		Label(self.root, text='select velocity unit to convert:').pack()
 		self.combo()
 		Button(self.root, text='Quit', command=self.root.quit).pack(side='bottom')
+		Button(self.root, text='Save', command=self.save_history).pack(side='bottom')
 		Button(self.root, text='Enter', command=self.calculate).pack(side='bottom')
+
 
 	#returns 500/m split time, kmh, mph, and min/mile equivalent times
 	#handles string input, float, and <0 errors
@@ -94,6 +97,12 @@ class split_converter:
 
 		self.box.bind('<<ComboboxSelected>>', input_box)
 
+	def save_history(self):
+		db = db_controller()
+		db.insert_record(self.history)
+
+	def export_history(self):
+		pass
 
 if __name__ == '__main__':
 	root = Tk()
