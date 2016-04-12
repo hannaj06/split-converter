@@ -1,6 +1,7 @@
 from split_converter.converterError import converterError
 from split_converter.single_val_converter import single_val_converter
 from split_converter.multiple_val_converter import multiple_val_converter
+import datetime
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
@@ -10,6 +11,7 @@ class split_converter:
 	def __init__(self, root):
 		self.root = root
 		self.root.title('velocity converter')
+		self.history = []
 		Frame(self.root, width=260, height=10).pack()
 		Label(self.root, text='select velocity unit to convert:').pack()
 		self.combo()
@@ -64,6 +66,9 @@ class split_converter:
 				i += 1
 
 			Label(self.root, text = '-----------------------').pack()
+			history = {'timestamp': datetime.datetime.now(), 'results': results}
+			self.history.append(history)
+			print(self.history)
 		except converterError as e:
 			messagebox.showwarning("Error", str(e))
 
