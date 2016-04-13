@@ -3,6 +3,7 @@ import datetime
 
 
 class db_controller(object):
+	#postcondition: db connection and cursor opened for other functions to use
 	def __init__(self):
 		self.connection = sqlite3.connect('split_converter.db')
 		self.cursor = self.connection.cursor()
@@ -41,6 +42,7 @@ class db_controller(object):
 		self.cursor.execute(sql)
 		self.connection.commit()
 
+	#postcondition: db cursor and connection closed
 	def close(self):
 		self.cursor.close()
 		self.connection.close()

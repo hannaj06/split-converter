@@ -99,12 +99,14 @@ class split_converter:
 
 		self.box.bind('<<ComboboxSelected>>', input_box)
 
+	#postcondition: saves all nonduplicate entries into history table of db
 	def save_history(self):
 		db = db_controller()
 		db.insert_record(self.history)
 		db.close()
 		print('history saved to db')
 
+	#postcondition: split_converter.txt is exported with all records in the history table of db
 	def export_history(self):
 		db = db_controller()
 		history = db.fetch()
@@ -112,11 +114,13 @@ class split_converter:
 		export_file = open('split_converter.txt', 'w')
 		export_file.write('split converter historcal data\n\n')
 		export_file.write('mm-dd-yy - hh:mm.ss | [min/500m, kmh, mph, min/mile]\n')
-		export_file.write('-----------------------------------------------------\n')
+		export_file.write('------------------------------------------------------------\n')
 		for record in history:
 			export_file.write(str(record[0]) + '  |  ' + str(record[1]) + '\n')
 		print('history exported to split_converter.txt')
 
+	#precondition: history table exists in split_converter db
+	#postcondition: table is dropped and recreated thus clearing all previous entries
 	def clear_history(self):
 		db = db_controller()
 		db.clear_db()
