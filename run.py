@@ -17,8 +17,10 @@ class split_converter:
 		Label(self.root, text='select velocity unit to convert:').pack()
 		self.combo()
 		Button(self.root, text='Quit', command=self.root.quit).pack(side='bottom')
-		Button(self.root, text='Save', command=self.save_history).pack(side='bottom')
 		Button(self.root, text='Enter', command=self.calculate).pack(side='bottom')
+		self.drop_down()
+
+
 
 
 	#returns 500/m split time, kmh, mph, and min/mile equivalent times
@@ -69,9 +71,9 @@ class split_converter:
 				i += 1
 
 			Label(self.root, text = '-----------------------').pack()
-			history = {'timestamp': datetime.datetime.now(), 'results': results}
+			history = {'timestamp': datetime.datetime.now().strftime("%d-%m-%y - %H:%M.%S"), 'results': results}
 			self.history.append(history)
-			print(self.history)
+
 		except converterError as e:
 			messagebox.showwarning("Error", str(e))
 
@@ -100,9 +102,35 @@ class split_converter:
 	def save_history(self):
 		db = db_controller()
 		db.insert_record(self.history)
+		db.close()
+		print('history saved to db')
 
 	def export_history(self):
-		pass
+		db = db_controller()
+		history = db.fetch()
+		db.close()
+		export_file = open('split_converter.txt', 'w')
+		export_file.write('split converter historcal data\n\n')
+		export_file.write('mm-dd-yy - hh:mm.ss | [min/500m, kmh, mph, min/mile]\n')
+		export_file.write('-----------------------------------------------------\n')
+		for record in history:
+			export_file.write(str(record[0]) + '  |  ' + str(record[1]) + '\n')
+		print('history exported to split_converter.txt')
+
+	def clear_history(self):
+		db = db_controller()
+		db.clear_db()
+		db.close()
+
+	def drop_down(self):
+		menu_bar = Menu(self.root)
+		self.root.config(menu = menu_bar)
+		tools_menu = Menu(menu_bar) 
+		menu_bar.add_cascade(label='tools', menu = tools_menu)
+
+		tools_menu.add_command(label = 'save', command = self.save_history)
+		tools_menu.add_command(label = 'export_history', command = self.export_history)
+		tools_menu.add_command(label = 'clear histry', command = self.clear_history)
 
 if __name__ == '__main__':
 	root = Tk()
