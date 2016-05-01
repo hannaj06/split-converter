@@ -3,6 +3,22 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <title>split-converter</title>
+<style>
+table, th, td {
+	border: 1px solid black;
+}
+
+th, td {
+	padding: 10px;
+}
+
+td {
+	width: 100px;
+	text-align: center;
+}
+
+
+</style>
 </head>
 
 <body>
@@ -40,13 +56,24 @@ $(document).ready(function(){
 
 </form>
 
-
+<div style="height: 50px;"></div>
+<table>
+	<tr>
+		<th>sec/500m</th>
+		<th>kmh</th>
+		<th>mph</th>
+		<th>min/mile</th>
+	</tr>
+	<tr>
 {% for i in results %}
-	
-	{{ i }}
-
+	<td>{{ i }}</td>
 {% endfor %}
+	</tr>
+</table>
 
-
+<br>
+<ul>
+<li><a href="/export" target="_blank">Export History</a></li>
+<li><a href="/clear_db">Clear History</a></li>
 </body>
 </html>

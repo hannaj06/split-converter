@@ -1,0 +1,4 @@
+split converter historcal data
+
+mm-dd-yy - hh:mm.ss | [min/500m, kmh, mph, min/mile]
+------------------------------------------------------------
