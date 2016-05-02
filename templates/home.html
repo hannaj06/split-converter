@@ -55,7 +55,7 @@ $(document).ready(function(){
 </div>
 
 </form>
-
+<span style="font-weight: bold; color: red;">{{ message }}</span>
 <div style="height: 50px;"></div>
 <table>
 	<tr>
@@ -64,9 +64,16 @@ $(document).ready(function(){
 		<th>mph</th>
 		<th>min/mile</th>
 	</tr>
+{% for i in his %}
+	<tr>
+		{% for j in i %}
+			<td>{{ j }}</td>
+		{% endfor %}
+	</tr>
+{% endfor %}
 	<tr>
 {% for i in results %}
-	<td>{{ i }}</td>
+	<td style="font-weight: bold;">{{ i }}</td>
 {% endfor %}
 	</tr>
 </table>

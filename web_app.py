@@ -3,13 +3,13 @@ from split_converter.single_val_converter import single_val_converter
 from split_converter.multiple_val_converter import multiple_val_converter
 from split_converter.db_controller import db_controller
 from multiprocessing import Process
-import time
+from split_converter.converterError import converterError
 
 templateLoader = FileSystemLoader( searchpath = 'templates')
 templateEnv = Environment(loader = templateLoader)
 home_page = templateEnv.get_template('home.html')
 
-single_process=True 
+single_process=False 
 
 
 
@@ -33,49 +33,61 @@ class home(tornado.web.RequestHandler):
             mins = self.get_argument('min', '')
             secs = self.get_argument('sec', '')
 
+        try:
+            if unit == 'kmh':
+                converter = single_val_converter(val)
+                results = [converter.kmh_to_split(),
+                val,
+                converter.kmh_to_mph(),
+                converter.kmh_to_msplit()]
 
-        if unit == 'kmh':
-            converter = single_val_converter(val)
-            results = [converter.kmh_to_split(),
-            val,
-            converter.kmh_to_mph(),
-            converter.kmh_to_msplit()]
 
+            elif unit == 'mph':
+                converter = single_val_converter(val)
 
-        elif unit == 'mph':
-            converter = single_val_converter(val)
+                results = [converter.mph_to_split(),
+                converter.mph_to_kmh(),
+                val,
+                converter.mph_to_msplit()
+                ] 
 
-            results = [converter.mph_to_split(),
-            converter.mph_to_kmh(),
-            val,
-            converter.mph_to_msplit()
-            ] 
+            elif unit == 'sec/500m':
+                converter = multiple_val_converter(mins, secs)
 
-        elif unit == 'sec/500m':
-            converter = multiple_val_converter(mins, secs)
+                results = [mins + ':' + secs,
+                converter.split_to_kmh(),
+                converter.split_to_mph(),
+                converter.split_to_msplit()
+                ]
 
-            results = [mins + ':' + secs,
-            converter.split_to_kmh(),
-            converter.split_to_mph(),
-            converter.split_to_msplit()
-            ]
+            elif unit == 'min/mile':
+                converter = multiple_val_converter(mins, secs)
 
-        elif unit == 'min/mile':
-            converter = multiple_val_converter(mins, secs)
+                results = [converter.msplit_to_split(),
+                converter.msplit_to_kmh(),
+                converter.msplit_to_mph(),
+                mins + ':' + secs
+                ]
 
-            results = [converter.msplit_to_split(),
-            converter.msplit_to_kmh(),
-            converter.msplit_to_mph(),
-            mins + ':' + secs
-            ]
+            #html is displayed while results are saved to db
+            results_process = Process(target=self.save_record, args = ({'timestamp': datetime.datetime.now().strftime("%d-%m-%y - %H:%M.%S"), 'results': results},))
+            results_process.start()
+            db = db_controller()
+            history = db.fetch_r()
 
-        #html is displayed while results are saved to db
-        results_process = Process(target=self.save_record, args = ({'timestamp': datetime.datetime.now().strftime("%d-%m-%y - %H:%M.%S"), 'results': results},))
-        results_process.start()
-        html_output = home_page.render(results = results)
-        self.write(html_output)
-        results_process.join()
+            his = []
+            for i in history:
+                i = i[0].replace('[', '').replace(']', '')
+                his.append(i.split(','))
 
+            db.close()
+            html_output = home_page.render(his = his, results = results)
+            self.write(html_output)
+            results_process.join()
+            
+        except converterError as e:
+            html_output = home_page.render(message = str(e)) 
+            self.write(html_output)
 
 class export(tornado.web.RequestHandler):
     def get(self):

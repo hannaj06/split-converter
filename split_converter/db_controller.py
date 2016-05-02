@@ -31,6 +31,11 @@ class db_controller(object):
 				print(str(e))
 
 	#postondition: returns all records from hisory table
+	def fetch_r(self):
+		sql = "SELECT results FROM history"
+		self.cursor.execute(sql)
+		return self.cursor.fetchall()
+	
 	def fetch(self):
 		sql = "SELECT * FROM history"
 		self.cursor.execute(sql)
